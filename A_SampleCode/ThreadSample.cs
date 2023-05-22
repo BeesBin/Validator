@@ -11,7 +11,9 @@ namespace ThreadTest
     {
         public class Worker
         {
-            // This method will be called when the thread is started. 
+            // This method will be called when the thread is started.
+            // 스레드가 실행될 때 호출되는 DoWork 메서드
+            // 0부터 9까지의 값을 반복하여 출력, 각 출력은 [ThreadX] i 형식 
             public void DoWork()
             {
                 for (int i=0; i<10; i++)

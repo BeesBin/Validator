@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-public class Program
+public class HttpClientRes
 {
     private static readonly HttpClient client = new HttpClient();
 
@@ -27,13 +27,14 @@ public class Program
 
         // URL 추출을 위한 데이터 파싱
         var dataObject = JObject.Parse(receivedData);
+
         int port = dataObject.Value<int>("port");
         JArray routes = dataObject.Value<JArray>("routes");
 
-        // 찾을 경로(prefix)
+        // 찾을 경로(prefix) => Console.ReadLine 하거나..
         string targetPathPrefix = "/auth";
 
-        // 해당하는 URL 찾기
+        // 해당하는 URL 찾기 routes JArray에서 targetPathPrefix를 Find
         string targetUrl = FindUrlByPathPrefix(routes, targetPathPrefix);
 
         // URL로 HTTP 요청 보내기
@@ -44,6 +45,7 @@ public class Program
     {
         foreach (var route in routes)
         {
+            // JArray 를 돌면서, Value 찾을 때는 하나의 route가 JObject인 것 처럼 대하기
             string currentPathPrefix = route.Value<string>("pathPrefix");
             if (currentPathPrefix == pathPrefix)
             {

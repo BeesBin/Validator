@@ -1,32 +1,4 @@
 using System;
-using System.Text.RegularExpressions;
-
-public class Program
-{
-    public static void Main()
-    {
-        string input = "http://127.0.0.1:5002/auth/lgcns?id=apple&key=DFGE";
-
-        // 정규식 패턴을 사용하여 파싱
-        string pattern = @"http://\d+\.\d+\.\d+\.\d+:(\d+)/auth/lgcns\?id=(\w+)&key=(\w+)";
-        Match match = Regex.Match(input, pattern);
-
-        if (match.Success)
-        {
-            string port = match.Groups[1].Value;
-            string auth = match.Groups[2].Value;
-            string id = match.Groups[3].Value;
-            string key = match.Groups[4].Value;
-
-            Console.WriteLine("Port: " + port);
-            Console.WriteLine("Auth: " + auth);
-            Console.WriteLine("ID: " + id);
-            Console.WriteLine("Key: " + key);
-        }
-    }
-}
-
-using System;
 
 public class Program
 {
@@ -66,3 +38,33 @@ public class Program
         Console.WriteLine("Key: " + key);
     }
 }
+
+/*
+using System;
+using System.Text.RegularExpressions;
+
+public class Program
+{
+    public static void Main()
+    {
+        string input = "http://127.0.0.1:5002/auth/lgcns?id=apple&key=DFGE";
+
+        // 정규식 패턴을 사용하여 파싱
+        string pattern = @"http://\d+\.\d+\.\d+\.\d+:(\d+)/auth/lgcns\?id=(\w+)&key=(\w+)";
+        Match match = Regex.Match(input, pattern);
+
+        if (match.Success)
+        {
+            string port = match.Groups[1].Value;
+            string auth = match.Groups[2].Value;
+            string id = match.Groups[3].Value;
+            string key = match.Groups[4].Value;
+
+            Console.WriteLine("Port: " + port);
+            Console.WriteLine("Auth: " + auth);
+            Console.WriteLine("ID: " + id);
+            Console.WriteLine("Key: " + key);
+        }
+    }
+}
+*/
