@@ -1,0 +1,215 @@
+2022 A ‘Service Proxy’ 프로그램
+■ 콘솔/HTTP ‘Client’로 부터 ‘Proxy 호출’이 발생
+  요청에 해당되는 ‘Service’를 검색, ‘Service 호출’, 응답
+■ 제공되는 Routing Rule에 따라 ‘Service 호출’
+  호출이력, 응답시간 등을 관리하여 ‘Service 추적’, ‘회로 차단’기능
+
+2022 B 실시간 스트리밍 시스템
+■ Input Queue에서 데이터를 가져와
+  다수의 Process/Thread를 활용하여 Worker를 실행
+  결과를 Output Queue로 출력
+
+2021 Messaging Service
+■ 콘솔 입출력/HTTP 요청/응답을 통해 Message를 송신/수신할 수 있는 Queue 생성
+  Message를 Queue에 송신, Queue에서 Message를 수신 기능
+
+2020 장애 분석 시스템
+■ 사용자가 입력한 임계값을 기준으로 모니터링 데이터에서 초과 여부 판별, 비정상 판단 데이터 생성
+  추세 분석용 데이터로 변환, 시스템 장애 여부를 분석, 장애 알림 프로그램으로 전달 
+■ 시스템 장애 판별 시, 장애 원인 프로세스를 검출
+  장애 알림 서버로 전달, 장애 현황 리포트 생성
+  
+2019 버스 정보 시뮬레이션
+■ 파일/통신 클라이언트로부터 버스의 위치 정보를 입력 받아,
+  선/후행차량정보와 정류장도착예정정보, 승객도착예정시각 등을 시뮬레이션
+  파일과 외부프로그램으로 출력
+  
+강의 Sample 교통카드 Validator
+■ 버스에 탑승한 승객이 교통카드를 정상적으로 사용했는지 여부를 판단
+■ Validator (검사원) : 버스에 탑승한 승객의 교통카드를 검사하는 디바이스
+              - 승하차 단말기에 카드 인식 정보 분석, 정상 승객 여부 판단
+			  - Login (검사원 ID, PW), Logout 기능
+			  - 검사 시작 (Bus ID), 검사 완료 기능
+			  - 검사 결과 Validator에 파일로 저장, 이름 중복 방지
+			  - Logout 시 검사했던 모든 결과 Server로 전송
+■ Server (관리자) : - 검사원 ID, PW 발급, 파일 형태로 저장/Update
+                    암호화 전송, 새벽 자동 다운로드 기능	  
+			      - 검사결과파일 저장
+				  - (Report 조회용 Manager 단말기) Report 요청, 일일 Report 생성, 전송
+				  - (Report 조회용 Manager 단말기) 동시 접속 상황 고려
+
+□ Question1 - Login 기능
+class ValidatorLauncher
+	static void Main(string[] args)
+		: while문 돌며, Console 입력 Catch, Login 성공 시 Break
+class Validator
+	public bool CheckIdPsw(string id, string psw)
+		: Login 정보 File 읽어서 Match 여부 판별
+class CardUtility
+	public static string passwordEncryption_SHA256(string strInput)
+		: string psw를 Hash 암호화 하여 string return
+	
+□ Question2 - 교통 카드 검사 및 결과 파일 저장
+class ValidatorLauncher
+	static void Main(string[] args)
+		: while문 돌며, Console 입력 Catch, Login 성공 시 Break
+		: while문 돌며, Console 입력 Catch, LOGOUT? WrongID? 정상 BUSID 일 시 시각 세팅, 검사 시작
+		  while문 돌며, Console 입력 Catch, DONE? WrongCardInfo? 정상 CardInfo 일 시, Inspection 수행
+		  - DONE이면 검사시작 while문 Break, 그 후 LOGOUT 일 시 Inspection while문 Break 
+class Validator
+	public bool CheckIdPsw(string id, string psw)
+		: Login 정보 File 읽어서 Match 여부 판별
+	public void InspectCard(string startTime, string id, string busID, string cardInfo)
+		: Inspect Logic에 따라서 Code 판별 후, 매 판별마다 FileStream 열어서 결과 해당 파일에 작성
+class CardUtility
+	public static string passwordEncryption_SHA256(string strInput)
+		: string psw를 Hash 암호화 하여 string return
+	public static long HourDiff(string strTime2, string strTime1)
+		: DateTime str 2개의 TimeSpan 계산하여 return
+		
+□ Question3 - 결과 파일 송수신 기능
+[Client]
+class ValidatorLauncher
+	static void Main(string[] args)
+		: while문 돌며, Console 입력 Catch, Login 성공 시 Break
+		: while문 돌며, Console 입력 Catch, LOGOUT? WrongID? 정상 BUSID 일 시 시각 세팅, 검사 시작
+		  while문 돌며, Console 입력 Catch, DONE? WrongCardInfo? 정상 CardInfo 일 시, Inspection 수행
+		  - DONE이면 검사시작 while문 Break, 그 후 LOGOUT 일 시 Inspection while문 Break
+		: 결과 파일 Server에 전송
+class Validator
+	public bool CheckIdPsw(string id, string psw)
+		: Login 정보 File 읽어서 Match 여부 판별
+	public void InspectCard(string startTime, string id, string busID, string cardInfo)
+		: Inspect Logic에 따라서 Code 판별 후, 매 판별마다 FileStream 열어서 결과 해당 파일에 작성
+	public void SendFiles(string id)
+		: Socket을 열고, IPEndPoint를 Connect
+		  NetworkStream을 통한 BinaryWriter에서 Dir 내 File들의 Filename, FileLen, byte[]를 순차로 Write
+		  보낸 File move 후, BinaryWriter, NetworkStream, Socket close
+class CardUtility
+	public static string passwordEncryption_SHA256(string strInput)
+		: string psw를 Hash 암호화 하여 string return
+	public static long HourDiff(string strTime2, string strTime1)
+		: DateTime str 2개의 TimeSpan 계산하여 return
+
+[Server]
+class ServerLauncher
+	static void Main(string[] args)
+		: Socket을 열고 SocketServer가 수행할 내용을 신규 Thread 안에 생성하여 Start
+		  while문 돌며, Console 입력 Catch, QUIT 일 시 Thread close 및 break
+		  while문 종료 시 Thread Join
+class CardSocketServer
+	public void DoSocketWork()
+		: Socket을 열고, IPEndPoint를 bind 하고, Listen 및 while문 Accept를 통하여 Socket를 Catch
+		  NetworkStream을 통한 BinaryReader에서 str를 Read하여 SaveFile
+	private void SaveFile(string fname, byte[] buf, int len)
+		: path의 File에 byte[] 내용을 저장
+		
+□ Question4 - Manager 단말기에서 Report 확인 기능
+ : 프로토콜에 맞춰 구현, 단말기 Manager.exe 동시에 Multi 통신
+[Client]
+class ValidatorLauncher
+	static void Main(string[] args)
+		: while문 돌며, Console 입력 Catch, Login 성공 시 Break
+		: while문 돌며, Console 입력 Catch, LOGOUT? WrongID? 정상 BUSID 일 시 시각 세팅, 검사 시작
+		  while문 돌며, Console 입력 Catch, DONE? WrongCardInfo? 정상 CardInfo 일 시, Inspection 수행
+		  - DONE이면 검사시작 while문 Break, 그 후 LOGOUT 일 시 Inspection while문 Break
+		: 결과 파일 Server에 전송
+class Validator
+	public bool CheckIdPsw(string id, string psw)
+		: Login 정보 File 읽어서 Match 여부 판별
+	public void InspectCard(string startTime, string id, string busID, string cardInfo)
+		: Inspect Logic에 따라서 Code 판별 후, 매 판별마다 FileStream 열어서 결과 해당 파일에 작성
+	public void SendFiles(string id)
+		: Socket을 열고, IPEndPoint를 Connect
+		  NetworkStream을 통한 BinaryWriter에서 Dir 내 File들의 Filename, FileLen, byte[]를 순차로 Write
+		  보낸 File move 후, BinaryWriter, NetworkStream, Socket close
+class CardUtility
+	public static string passwordEncryption_SHA256(string strInput)
+		: string psw를 Hash 암호화 하여 string return
+	public static long HourDiff(string strTime2, string strTime1)
+		: DateTime str 2개의 TimeSpan 계산하여 return
+
+[Server]
+class ServerLauncher
+	static void Main(string[] args)
+		: Socket을 열고 SocketServer가 수행할 내용을 신규 Thread 안에 생성하여 Start
+		: Manager 단말기 통신용 Socket을 열고 HttpServer가 수행할 내용을 신규 Thread 안에 생성하여 Start
+		  while문 돌며, Console 입력 Catch, QUIT 일 시 Thread close 및 break
+		  while문 종료 시 Thread Join
+class CardSocketServer
+	public void DoSocketWork()
+		: Socket을 열고, IPEndPoint를 bind 하고, Listen 및 while문 Accept를 통하여 Socket를 Catch
+		  NetworkStream을 통한 BinaryReader에서 str를 Read하여 SaveFile
+	private void SaveFile(string fname, byte[] buf, int len)
+		: path의 File에 byte[] 내용을 저장
+class ReportHttpServer
+	: 동시접속 구현을 위한 Mutex 변수 Seq용, End용 선언
+	public void DoHttpServer(Object obj)
+		: HttpListener를 생성, Prefixes를 추가한 후, Start
+		  while문 돌며, 받아온 Context를 처리할 수행문을 Thread 안에 생성하여 각각 Start
+	private void DoContext(Object obj)
+		: 받아온 HttpListenerContext의 Request를 처리
+		   context.Request.Url.LocalPath.Split('/') => command, managerId, strDate
+		   context.Request.HttpMethod => "GET" or "POST"
+		  GET, REPORT 일 시,
+		   report 작성, mutex 잡고 SeqNo할당 후 release, report 저장
+		   TimeOut 시 처리할 수행문을 Thread 안에 생성하고 ThreadDic에 저장 및 Start, Log 작성
+		  POST 일 시,
+		   context.Request.InputStream을 StreamReader를 통하여 받아 JObject에 파싱 후 저장
+		   "FINISH" or "FAIL" 일 시 구분하여 "Result" 값 부여 후 
+		   mutex 잡고, 해당하는 timeout Thread를 Interrupt, ThreadDic에서 제거
+		   ReportFile 저장, Log 작성, mutex release
+		  Context 처리 끝난 후, SendData
+	private void DoTimeOut(Object obj)
+		: Environment.TickCount로 부터 startTick을 minus하여 시간 Count
+		  mutex 잡고, ReportFile 저장, Log 작성, mutex release
+	private void SendData(HttpListenerContext context, JObject resJson)
+		: JObject 결과를 UTF8로 Encoding하여 결과 byte[]를
+		  context.Response.OutStream.Write를 통하여 Manager 단말기에 결과 전송,
+		  context.Response Close
+class ReportHandling
+	public static int IncreaseSeqNo()
+		: static 변수 seqNo++ 관리하여 return
+	public static void storeReport(string reportId, string report)
+		: ReportDic에 report 저장
+	public static removeReport(string reportId)
+		: ReportDic에서 report 삭제, pop 기능
+	public static string MakeReport(string strDate)
+		: SERVER path 전체 파일 중 FileName이 Valid하면, Data Analysis
+		  StringBuilder를 통하여 분석 결과 str(StrId CheckCard FailCard)를 Append하여 return
+	private static void AnalysisData(Dictionary<int, Report> m, string path)
+		: path의 data분석 결과를 ReportDic에 저장하는 메서드
+		  StreamReader로 path의 file 읽어, line 별로 Substring parsing 하여 analysis
+		  Substring(5,3): (?) 이미 ReportDic에 있는 key인지 여부
+		  	없으면, 신규 Report 생성, ReportDic에 report 결과 Add
+				setCheckCard(1) (Default)
+				Substring(0,8): CardID 세팅
+				Substring(49,1): "1"이면 FailCard 아님 setFailCard(0)
+								 "1"아니면 FailCard임 setFailCard(1)
+			이미 있으면, increaseCheckCard, increaseFailCard만 확인
+	public static bool SaveReportFile(string reportId, string type)
+		: \\SERVER\\REPORT 경로에 StreamWriter를 통하여 reportID에 해당하는 Report를 작성함	    
+class Report
+	: report 1개 마다 Analysis 결과를 저장할 수 있는 클래스
+	private String strID
+		: CardID
+	private int CheckCard
+		: 체크한 카드 수
+	private int FailCard
+		: 실패한 카드 수
+	
+	public String getStrID
+	public void setStrID
+	public int getCheckCard
+	public void setCheckCard(int nCheckCard)
+	public int getFailCard
+	public void setFailCard(int nFailCard)
+	
+	public void increaseCheckCard()
+		: CheckCard++ 체크한 카드 수 1++
+	public void increaseFailCard()
+		: FailCard++ 실패한 카드 수 1++
+
+class Logger
+	public static void WriteLog(params string[] paramArray)
+		: mutex 잡고, string Format에 담아 StreamWriter를 통한 Log 작성, mutex release

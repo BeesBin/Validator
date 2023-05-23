@@ -8,6 +8,15 @@ using System.Net.Sockets;
 
 namespace PrjClient
 {
+    /*1. Client에서 Server에 접속하면 Server는 현재 날짜와시각을 Client로 전송하고, Client
+는 전송 받은 값을 출력하시오.
+    2. Client에서 Server에 접속하여파일을 전송하는프로그램을작성하시오.
+➢ ClientFiles 폴더의모든 파일을전송하여 ServerFiles폴더에 저장
+- Client는 파일 전송 완료 후 종료
+- Server는 파일을 수신 완료하고다시 Client 접속 대기
+- Server는 ‘QUIT’입력을 받으면종료
+    */
+
     class DateSocketClient
     {
         public static void StartClient()

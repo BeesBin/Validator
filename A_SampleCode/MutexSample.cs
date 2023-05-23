@@ -9,6 +9,7 @@ namespace ThreadTest
 {
     class ThreadSample
     {
+        // Mutex를 사용하여Main과 2개의 Thread함수에서다음과 같이 1~30까지 숫자를연속으로 출력하게 하시오.
         private static Mutex mut = new Mutex();
 
         static void PrintNums(string str)
