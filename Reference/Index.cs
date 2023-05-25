@@ -1,3 +1,10 @@
+
+1. 3번 부터 읽고, 이해가 안가면 앞에 기능 요약을 읽는다.
+2. 읽으면서 사용 요소 파악하면, 스크립트 보면서 붙여 넣는다. 전체 구조 생각 하면서 작성하기.
+3. 프로그램 완성 끝나면, 테스트에 심혈을 기울인다.
+
+
+
 /*1. File I/O*/
 // Text File Read & Print
 static void PrintFile(string filename)
@@ -78,7 +85,7 @@ class ThreadSample
 		// This method will be called when the thread is started.
 		public void DoWork()
 		{
-			Console.WriteLine("Thread is running...");
+			Console.WriteLine("Thread is running ");
 		}
 	}
 	static void Main(string[] args)

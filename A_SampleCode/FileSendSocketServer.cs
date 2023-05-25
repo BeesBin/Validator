@@ -92,7 +92,7 @@ namespace SocketServer
                     }
                     catch (EndOfStreamException e)
                     {
-                        Console.WriteLine("Finish Recieve...");
+                        Console.WriteLine("Finish Recieve ");
                         handler.Shutdown(SocketShutdown.Both);
                         handler.Close();
                     }
@@ -101,7 +101,7 @@ namespace SocketServer
             catch (SocketException e)
             {
                 //Console.WriteLine(e.ToString());
-                Console.WriteLine("Finish Server Work...");
+                Console.WriteLine("Finish Server Work ");
             }
 
             listener.Close();

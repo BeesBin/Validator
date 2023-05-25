@@ -65,7 +65,7 @@ namespace PrjServer
                 Console.WriteLine(e.ToString());
             }
 
-            Console.WriteLine("\nPress ENTER to continue...");
+            Console.WriteLine("\nPress ENTER to continue ");
             Console.Read();
 
         }

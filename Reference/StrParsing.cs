@@ -1,3 +1,27 @@
+public string GetSequenceNumber(int number)
+{
+    string sequenceNumber = number.ToString().PadLeft(3, '0');
+    return sequenceNumber;
+}
+
+public string GetSequenceNumber(int number)
+{
+    string sequenceNumber = number.ToString("D3");
+    return sequenceNumber;
+}
+
+string input = "015";
+
+int number = int.Parse(input);
+
+string result = number.ToString("D3");
+
+Console.WriteLine(result);
+
+
+
+
+
 using System;
 
 public class Program

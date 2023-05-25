@@ -19,7 +19,7 @@ class JSONMain
 
         Console.WriteLine("Json : " + jsonstr);
         JObject json2 = JObject.Parse(jsonstr);
-        // string to JObject : 'JObject.Parse('string...')'
+        // string to JObject : 'JObject.Parse('string ')'
         Console.WriteLine($"Name : {json2["name"]}, Salary : {json2["salary"]}");
     }
 }
